@@ -38,6 +38,22 @@ body {
   transition: color 0.2s ease;
 }
 
+/* 收起时的LOGO按钮 */
+.leaflet-control-layers-toggle {
+  background-image: none !important; /* 去掉Leaflet默认背景图 */
+  background-color: rgba(255, 255, 255, 0.8) !important;
+  width: 16px !important;
+  height: 16px !important;
+  text-align: center !important;
+  line-height: 16px !important;
+  font-size: 10px !important;
+  text-decoration: none;
+}
+/* 自定义LOGO（地图emoji） */
+.leaflet-control-layers-toggle::before {
+  content: "🗺️" !important;
+}
+
 /* 大屏hover效果（仅非触摸设备生效） */
 @media (hover: hover) and (pointer: fine) {
   #map:hover {

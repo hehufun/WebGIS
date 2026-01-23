@@ -69,6 +69,17 @@
       );
       const arcgisLayers = L.layerGroup([arcgisImgLayer]);
 
+      // ===== OpenStreetMap (OSM) 底图 =====
+      const osmLayer = L.tileLayer(
+        "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
+        {
+          maxZoom: 19,
+          attribution:
+            "<a href='https://www.openstreetmap.org/' target='_blank'>OpenStreetMap</a>",
+        },
+      );
+      const osmLayers = L.layerGroup([osmLayer]); // OSM无单独标注图层
+
       // 2. 添加常用控件
       // 比例尺控件（左下角显示公里/米）
       L.control
@@ -86,11 +97,13 @@
             天地图影像底图: imgLayers,
             天地图矢量底图: vecLayers,
             ArcGIS影像底图: arcgisLayers,
+            OSM底图边界有误慎用: osmLayers,
           },
           {},
           {
             position: "bottomleft", // 位置：右上角
-            collapsed: false, // 默认为true（折叠），设为false始终展开
+            collapsed: true, // 默认为true（折叠），设为false始终展开
+            autoZIndex: true,
           },
         )
         .addTo(map);
