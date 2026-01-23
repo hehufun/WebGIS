@@ -19,7 +19,7 @@ document.addEventListener("DOMContentLoaded", function () {
     { name: "平阳", file: "平阳.geojson" },
     { name: "瑞安", file: "瑞安.geojson" },
   ];
-  const geoJsonBasePath = "/assests/geojson/";
+  const geoJsonBasePath = "./assests/geojson/";
   // 图层缓存对象
   const layerCache = {};
 
