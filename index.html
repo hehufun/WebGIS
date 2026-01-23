@@ -4,8 +4,13 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>WebGIS示例页面</title>
+    <!-- Leaflet核心库 -->
     <script src="./assests/leaflet.js"></script>
     <link rel="stylesheet" href="./assests/leaflet.css" />
+    <!-- 显示坐标插件 -->
+    <link rel="stylesheet" href="./assests/Leaflet.MousePosition.css" />
+    <script src="./assests/Leaflet.MousePosition.js"></script>
+    <!-- 自定义css -->
     <link rel="stylesheet" href="./assests/main.css" />
   </head>
   <body>
@@ -18,14 +23,22 @@
       //   去掉左下角的Leaflet标记
       map.attributionControl.setPrefix("");
 
-      //   map.on("click", function (e) {
-      //     alert(
-      //       `点击位置经纬度：${e.latlng.lng.toFixed(6)}, ${e.latlng.lat.toFixed(6)}`,
-      //     );
-      //   });
+      // 3. 核心：点击地图显示popup弹窗（替换原alert）
+      var popup = L.popup();
+      function onMapClick(e) {
+        // 设置弹窗位置+内容（保留6位小数，和原alert格式一致）
+        popup
+          .setLatLng(e.latlng)
+          .setContent(
+            `点击位置经纬度：${e.latlng.lng.toFixed(6)}, ${e.latlng.lat.toFixed(6)}`,
+          )
+          .openOn(map); // 在地图上打开弹窗（自动关闭之前的弹窗）
+      }
+      // 绑定点击事件
+      map.on("click", onMapClick);
+
       // 替换为你的天地图TK
       const TDT_TK = "13f1ff3b1c59a59cea87cf63950b4888";
-
       // 影像底图
       const tdtImgLayer = L.tileLayer(
         `http://t0.tianditu.gov.cn/DataServer?T=img_w&x={x}&y={y}&l={z}&tk=${TDT_TK}`,
@@ -85,7 +98,7 @@
       L.control
         .scale({
           imperial: false, // 关闭英制单位（只显示公制）
-          maxWidth: 150, // 控件最大宽度
+          maxWidth: 100, // 控件最大宽度
           position: "bottomleft", // 位置：左下角
         })
         .addTo(map);
@@ -94,10 +107,10 @@
       L.control
         .layers(
           {
+            ArcGIS影像底图: arcgisLayers,
             天地图影像底图: imgLayers,
             天地图矢量底图: vecLayers,
-            ArcGIS影像底图: arcgisLayers,
-            OSM底图边界有误慎用: osmLayers,
+            OSM底图_边界有误慎用: osmLayers,
           },
           {},
           {
@@ -109,7 +122,16 @@
         .addTo(map);
 
       // 自动加载默认标注图层（影像底图）
-      imgLayers.addTo(map);
+      arcgisLayers.addTo(map);
+
+      // 添加经纬度显示插件（可自定义配置）
+      L.control
+        .mousePosition({
+          position: "topright",
+          format: "经度: {lng}, 纬度: {lat}",
+          precision: 5,
+        })
+        .addTo(map);
     </script>
   </body>
 </html>
