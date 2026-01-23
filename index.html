@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>WebGIS示例页面</title>
+    <script src="./assests/leaflet.js"></script>
+    <link rel="stylesheet" href="./assests/leaflet.css" />
+    <link rel="stylesheet" href="./assests/main.css" />
+  </head>
+  <body>
+    <div id="map"></div>
+    <script>
+      const map = L.map("map", {
+        zoomControl: true,
+        attributionControl: true,
+      }).setView([27.8, 120.8], 12);
+      //   去掉左下角的Leaflet标记
+      map.attributionControl.setPrefix("");
+
+      //   map.on("click", function (e) {
+      //     alert(
+      //       `点击位置经纬度：${e.latlng.lng.toFixed(6)}, ${e.latlng.lat.toFixed(6)}`,
+      //     );
+      //   });
+      // 替换为你的天地图TK
+      const TDT_TK = "13f1ff3b1c59a59cea87cf63950b4888";
+
+      // 影像底图
+      const tdtImgLayer = L.tileLayer(
+        `http://t0.tianditu.gov.cn/DataServer?T=img_w&x={x}&y={y}&l={z}&tk=${TDT_TK}`,
+        {
+          maxZoom: 18,
+          attribution:
+            "<a href='http://www.tianditu.gov.cn/' target='_blank'>天地图影像</a>",
+        },
+      );
+      const tdtImgAnno = L.tileLayer(
+        `http://t0.tianditu.gov.cn/DataServer?T=cia_w&x={x}&y={y}&l={z}&tk=${TDT_TK}`,
+        { maxZoom: 18 },
+      );
+      // 影像图层组
+      const imgLayers = L.layerGroup([tdtImgLayer, tdtImgAnno]);
+
+      // 矢量底图
+      const tdtVecLayer = L.tileLayer(
+        `http://t0.tianditu.gov.cn/DataServer?T=vec_w&x={x}&y={y}&l={z}&tk=${TDT_TK}`,
+        {
+          maxZoom: 18,
+          attribution:
+            "<a href='http://www.tianditu.gov.cn/' target='_blank'>天地图矢量</a>",
+        },
+      );
+      const tdtVecAnno = L.tileLayer(
+        `http://t0.tianditu.gov.cn/DataServer?T=cva_w&x={x}&y={y}&l={z}&tk=${TDT_TK}`,
+        { maxZoom: 18 },
+      );
+      // 矢量图层组
+      const vecLayers = L.layerGroup([tdtVecLayer, tdtVecAnno]);
+
+      // ===== ArcGIS Online影像底图 =====
+      const arcgisImgLayer = L.tileLayer(
+        "//server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
+        {
+          maxZoom: 19,
+          attribution:
+            "<a href='https://www.arcgis.com/' target='_blank'>ArcGIS Online</a>",
+        },
+      );
+      const arcgisLayers = L.layerGroup([arcgisImgLayer]);
+
+      // 2. 添加常用控件
+      // 比例尺控件（左下角显示公里/米）
+      L.control
+        .scale({
+          imperial: false, // 关闭英制单位（只显示公制）
+          maxWidth: 150, // 控件最大宽度
+          position: "bottomleft", // 位置：左下角
+        })
+        .addTo(map);
+
+      // 图层切换控件（右上角，切换影像/矢量底图）
+      L.control
+        .layers(
+          {
+            天地图影像底图: imgLayers,
+            天地图矢量底图: vecLayers,
+            ArcGIS影像底图: arcgisLayers,
+          },
+          {},
+          {
+            position: "bottomleft", // 位置：右上角
+            collapsed: false, // 默认为true（折叠），设为false始终展开
+          },
+        )
+        .addTo(map);
+
+      // 自动加载默认标注图层（影像底图）
+      imgLayers.addTo(map);
+    </script>
+  </body>
+</html>

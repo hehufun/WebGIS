@@ -1,0 +1,46 @@
+/* 全局重置，优化移动端体验 */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* 适配移动端body，避免横向滚动 */
+body {
+  padding: 10px;
+}
+
+#map {
+  width: min(90%, 100vw - 20px);
+  /* max-width: 1200px; */
+  height: max(80vh, min(90vh, 800px));
+  margin: 0 auto; /* 水平居中 */
+  position: relative;
+  border: min(1.6px, 1vh) dashed #99cc99;
+  border-radius: max(6px, 0.6vw);
+  overflow: hidden;
+  /* 移动端触摸优化 */
+  touch-action: pan-x pan-y;
+  transition: box-shadow 0.3s ease;
+}
+
+.leaflet-control-attribution {
+  background: rgba(255, 255, 255, 0.3) !important;
+  border-radius: 0.6px;
+  font-size: 10px;
+  padding: 1px 1px;
+}
+
+/* 针对版权控件内的a链接样式 */
+.leaflet-control-attribution a {
+  color: #99cc99;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+/* 大屏hover效果（仅非触摸设备生效） */
+@media (hover: hover) and (pointer: fine) {
+  #map:hover {
+    box-shadow: 0 max(4px, 1vw) max(20px, 4vw) rgba(0, 0, 0, max(0.12, 0.03vw));
+  }
+}
