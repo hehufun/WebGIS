@@ -1,16 +1,12 @@
 // loginModal.js
 (function () {
-  // ===================== 1. 集中管理账户信息 =====================
-  // 可扩展多个账户，每个账户包含用户名、密码、类型
   const userAccounts = [
     { username: "admin", password: "123456", type: "超级管理员" },
     { username: "1", password: "1", type: "超级管理员" },
     { username: "editor", password: "editor123", type: "内容编辑" },
     { username: "viewer", password: "viewer123", type: "只读查看" },
     { username: "operator", password: "op123456", type: "运维人员" },
-    // 可继续添加更多账户
   ];
-
   // ===================== 2. 样式配置项（可自定义） =====================
   const styleConfig = {
     maskBg: "rgba(0, 0, 0, 0.5)", // 遮罩层背景

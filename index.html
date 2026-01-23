@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>WebGIS示例页面</title>
-    <script src="./assests/login.js"></script>
+    <!-- <script src="./assests/login.js"></script> -->
     <!-- Leaflet核心库 -->
     <script src="./assests/leaflet.js"></script>
     <link rel="stylesheet" href="./assests/leaflet.css" />
@@ -15,32 +15,26 @@
     <link rel="stylesheet" href="./assests/main.css" />
   </head>
   <body>
+    <!-- 左侧图层控制面板 -->
+    <div class="layer-panel">
+      <h3>图层控制</h3>
+      <!-- 图层开关项容器（由JS自动生成） -->
+      <div id="layerItemsContainer"></div>
+    </div>
+    <!-- 右侧地图容器 -->
     <div id="map"></div>
+    <!-- 基础设定JS脚本 -->
     <script>
-      const map = L.map("map", {
-        zoomControl: true,
-        attributionControl: true,
-      }).setView([27.8, 120.8], 12);
-      //   去掉左下角的Leaflet标记
-      map.attributionControl.setPrefix("");
-
-      // 3. 核心：点击地图显示popup弹窗（替换原alert）
-      var popup = L.popup();
-      function onMapClick(e) {
-        // 设置弹窗位置+内容（保留6位小数，和原alert格式一致）
-        popup
-          .setLatLng(e.latlng)
-          .setContent(
-            `点击位置经纬度：${e.latlng.lng.toFixed(6)}, ${e.latlng.lat.toFixed(6)}`,
-          )
-          .openOn(map); // 在地图上打开弹窗（自动关闭之前的弹窗）
-      }
-      // 绑定点击事件
-      map.on("click", onMapClick);
-
-      // 替换为你的天地图TK
+      // 天地图TK配置
       const TDT_TK = "13f1ff3b1c59a59cea87cf63950b4888";
-      // 影像底图
+      // 初始化地图容器
+      map = L.map("map", {
+        zoomControl: true,
+        attributionControl: false,
+      }).setView([27.8, 120.8], 12);
+
+      // ========== 底图图层定义 ==========
+      // 1. 天地图影像底图
       const tdtImgLayer = L.tileLayer(
         `http://t0.tianditu.gov.cn/DataServer?T=img_w&x={x}&y={y}&l={z}&tk=${TDT_TK}`,
         {
@@ -53,10 +47,9 @@
         `http://t0.tianditu.gov.cn/DataServer?T=cia_w&x={x}&y={y}&l={z}&tk=${TDT_TK}`,
         { maxZoom: 18 },
       );
-      // 影像图层组
       const imgLayers = L.layerGroup([tdtImgLayer, tdtImgAnno]);
 
-      // 矢量底图
+      // 2. 天地图矢量底图
       const tdtVecLayer = L.tileLayer(
         `http://t0.tianditu.gov.cn/DataServer?T=vec_w&x={x}&y={y}&l={z}&tk=${TDT_TK}`,
         {
@@ -69,10 +62,9 @@
         `http://t0.tianditu.gov.cn/DataServer?T=cva_w&x={x}&y={y}&l={z}&tk=${TDT_TK}`,
         { maxZoom: 18 },
       );
-      // 矢量图层组
       const vecLayers = L.layerGroup([tdtVecLayer, tdtVecAnno]);
 
-      // ===== ArcGIS Online影像底图 =====
+      // 3. ArcGIS影像底图
       const arcgisImgLayer = L.tileLayer(
         "//server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
         {
@@ -83,7 +75,7 @@
       );
       const arcgisLayers = L.layerGroup([arcgisImgLayer]);
 
-      // ===== OpenStreetMap (OSM) 底图 =====
+      // 4. OSM底图
       const osmLayer = L.tileLayer(
         "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
         {
@@ -92,19 +84,10 @@
             "<a href='https://www.openstreetmap.org/' target='_blank'>OpenStreetMap</a>",
         },
       );
-      const osmLayers = L.layerGroup([osmLayer]); // OSM无单独标注图层
+      const osmLayers = L.layerGroup([osmLayer]);
 
-      // 2. 添加常用控件
-      // 比例尺控件（左下角显示公里/米）
-      L.control
-        .scale({
-          imperial: false, // 关闭英制单位（只显示公制）
-          maxWidth: 100, // 控件最大宽度
-          position: "bottomleft", // 位置：左下角
-        })
-        .addTo(map);
-
-      // 图层切换控件（右上角，切换影像/矢量底图）
+      // ========== 控件配置 ==========
+      // 1. 底图切换控件
       L.control
         .layers(
           {
@@ -114,18 +97,20 @@
             OSM底图_边界有误慎用: osmLayers,
           },
           {},
-          {
-            position: "bottomleft", // 位置：右上角
-            collapsed: true, // 默认为true（折叠），设为false始终展开
-            autoZIndex: true,
-          },
+          { position: "bottomleft", collapsed: true, autoZIndex: true },
         )
         .addTo(map);
 
-      // 自动加载默认标注图层（影像底图）
-      arcgisLayers.addTo(map);
+      // 2. 比例尺控件
+      L.control
+        .scale({
+          imperial: false,
+          maxWidth: 100,
+          position: "bottomright",
+        })
+        .addTo(map);
 
-      // 添加经纬度显示插件（可自定义配置）
+      // 3. 鼠标坐标控件
       L.control
         .mousePosition({
           position: "topright",
@@ -133,6 +118,11 @@
           precision: 5,
         })
         .addTo(map);
+
+      // 设置默认底图
+      arcgisLayers.addTo(map);
     </script>
+    <!-- geojson图层加载器 -->
+    <script src="./assests/geojsonloader.js"></script>
   </body>
 </html>
