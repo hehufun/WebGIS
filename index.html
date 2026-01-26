@@ -4,21 +4,37 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>WebGIS示例页面</title>
-    <!-- <script src="./assests/login.js"></script> -->
+    <script src="./assets/login.js"></script>
     <!-- Leaflet核心库 -->
-    <script src="./assests/leaflet.js"></script>
-    <link rel="stylesheet" href="./assests/leaflet.css" />
+    <script src="./assets/leaflet.js"></script>
+    <link rel="stylesheet" href="./assets/leaflet.css" />
     <!-- 显示坐标插件 -->
-    <link rel="stylesheet" href="./assests/Leaflet.MousePosition.css" />
-    <script src="./assests/Leaflet.MousePosition.js"></script>
+    <link rel="stylesheet" href="./assets/Leaflet.MousePosition.css" />
+    <script src="./assets/Leaflet.MousePosition.js"></script>
     <!-- 自定义css -->
-    <link rel="stylesheet" href="./assests/main.css" />
+    <link rel="stylesheet" href="./assets/main.css" />
+
+    <!-- WPA -->
+    <!-- 静态兜底（优先被覆盖，仅JS失败时生效） -->
+    <link rel="manifest" href="./manifest.json" id="static-manifest" />
+    <!-- 包含动态生成manifest.json的主脚本 -->
+    <script src="./app.js"></script>
+    <!-- 适配iOS -->
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="#2196F3" />
+    <meta name="apple-mobile-web-app-title" content="GeoJSON应用" />
+    <link rel="apple-touch-icon" href="./assets/images/icon.svg" />
+    <!-- 主题色适配 -->
+    <meta name="theme-color" content="#2196F3" />
+    <link rel="icon" href="./assets/images/icon.svg" type="image/svg+xml" />
   </head>
   <body>
+    <!-- 悬浮触发按钮 -->
+    <div class="layer-trigger" id="layerTrigger">要素加载</div>
     <!-- 左侧图层控制面板 -->
-    <div class="layer-panel">
-      <h3>图层控制</h3>
-      <!-- 图层开关项容器（由JS自动生成） -->
+    <div class="layer-panel" id="layerPanel">
+      <h3>图层要素</h3>
       <div id="layerItemsContainer"></div>
     </div>
     <!-- 右侧地图容器 -->
@@ -123,6 +139,6 @@
       arcgisLayers.addTo(map);
     </script>
     <!-- geojson图层加载器 -->
-    <script src="./assests/geojsonloader.js"></script>
+    <script src="./assets/geojsonloader.js"></script>
   </body>
 </html>
