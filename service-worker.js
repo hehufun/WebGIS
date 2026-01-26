@@ -1,34 +1,30 @@
-// 动态获取部署根目录（适配任意子目录）
-const swPath = self.location.pathname; // 比如 "/WebGIS/service-worker.js"
-const basePath = swPath.replace("service-worker.js", ""); // 得到 "/WebGIS/"
-
 // 缓存名称（更新时修改，触发缓存重建）
-const CACHE_NAME = "geojson-app-v1.0.0";
+const CACHE_NAME = "geojson-app-v1.0.1";
 // 需要缓存的资源（替换为你的GeoJSON路径）
 const CACHE_ASSETS = [
-  basePath,
-  `${basePath}index.html`,
-  `${basePath}app.js`,
-  `${basePath}manifest.json`,
-  `${basePath}assets/main.css`,
-  `${basePath}assets/login.js`,
-  `${basePath}assets/geojsonloader.js`,
-  `${basePath}assets/leaflet.js`,
-  `${basePath}assets/leaflet.css`,
-  `${basePath}assets/Leaflet.MousePosition.css`,
-  `${basePath}assets/Leaflet.MousePosition.js`,
-  `${basePath}assets/images/icon.svg`,
-  `${basePath}assets/geojson/乐清.geojson`,
-  `${basePath}assets/geojson/岸线变化.geojson`,
-  `${basePath}assets/geojson/平阳.geojson`,
-  `${basePath}assets/geojson/洞头.geojson`,
-  `${basePath}assets/geojson/瑞安.geojson`,
-  `${basePath}assets/geojson/瓯江口.geojson`,
-  `${basePath}assets/geojson/经开区.geojson`,
-  `${basePath}assets/geojson/苍南.geojson`,
-  `${basePath}assets/geojson/项目.geojson`,
-  `${basePath}assets/geojson/龙港.geojson`,
-  `${basePath}assets/geojson/龙湾.geojson`,
+  "./",
+  `./index.html`,
+  `./app.js`,
+  `./manifest.json`,
+  `./assets/main.css`,
+  `./assets/login.js`,
+  `./assets/geojsonloader.js`,
+  `./assets/leaflet.js`,
+  `./assets/leaflet.css`,
+  `./assets/Leaflet.MousePosition.css`,
+  `./assets/Leaflet.MousePosition.js`,
+  `./assets/images/icon.svg`,
+  `./assets/geojson/乐清.geojson`,
+  `./assets/geojson/岸线变化.geojson`,
+  `./assets/geojson/平阳.geojson`,
+  `./assets/geojson/洞头.geojson`,
+  `./assets/geojson/瑞安.geojson`,
+  `./assets/geojson/瓯江口.geojson`,
+  `./assets/geojson/经开区.geojson`,
+  `./assets/geojson/苍南.geojson`,
+  `./assets/geojson/项目.geojson`,
+  `./assets/geojson/龙港.geojson`,
+  `./assets/geojson/龙湾.geojson`,
 ];
 
 // 安装阶段：缓存资源
