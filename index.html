@@ -51,6 +51,11 @@
       }).setView([27.8, 120.8], 12);
 
       // ========== 底图图层定义 ==========
+      // 0. 天地图全球境界底图
+      const tdtIboLayer = L.tileLayer(
+        `http://t0.tianditu.gov.cn/DataServer?T=ibo_w&x={x}&y={y}&l={z}&tk=${TDT_TK}`,
+        { maxZoom: 10 },
+      );
       // 1. 天地图影像底图
       const tdtImgLayer = L.tileLayer(
         `http://t0.tianditu.gov.cn/DataServer?T=img_w&x={x}&y={y}&l={z}&tk=${TDT_TK}`,
@@ -64,7 +69,7 @@
         `http://t0.tianditu.gov.cn/DataServer?T=cia_w&x={x}&y={y}&l={z}&tk=${TDT_TK}`,
         { maxZoom: 18 },
       );
-      const imgLayers = L.layerGroup([tdtImgLayer, tdtImgAnno]);
+      const imgLayers = L.layerGroup([tdtImgLayer, tdtIboLayer, tdtImgAnno]);
 
       // 2. 天地图矢量底图
       const tdtVecLayer = L.tileLayer(
@@ -79,9 +84,25 @@
         `http://t0.tianditu.gov.cn/DataServer?T=cva_w&x={x}&y={y}&l={z}&tk=${TDT_TK}`,
         { maxZoom: 18 },
       );
-      const vecLayers = L.layerGroup([tdtVecLayer, tdtVecAnno]);
+      const vecLayers = L.layerGroup([tdtVecLayer, tdtIboLayer, tdtVecAnno]);
+
+      // 2.1 天地图地形底图
+      const tdtTerLayer = L.tileLayer(
+        `http://t0.tianditu.gov.cn/DataServer?T=ter_w&x={x}&y={y}&l={z}&tk=${TDT_TK}`,
+        {
+          maxZoom: 18,
+          attribution:
+            "<a href='http://www.tianditu.gov.cn/' target='_blank'>天地图地形</a>",
+        },
+      );
+      const tdtTerAnno = L.tileLayer(
+        `http://t0.tianditu.gov.cn/DataServer?T=cta_w&x={x}&y={y}&l={z}&tk=${TDT_TK}`,
+        { maxZoom: 18 },
+      );
+      const terLayers = L.layerGroup([tdtTerLayer, tdtIboLayer, tdtTerAnno]);
 
       // 3. ArcGIS影像底图
+      // 3.1 原有ArcGIS影像底图
       const arcgisImgLayer = L.tileLayer(
         "//server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
         {
@@ -90,7 +111,40 @@
             "<a href='https://www.arcgis.com/' target='_blank'>ArcGIS Online</a>",
         },
       );
-      const arcgisLayers = L.layerGroup([arcgisImgLayer]);
+      const arcgisLayers = L.layerGroup([arcgisImgLayer, tdtIboLayer]);
+
+      // 3.2 ArcGIS 矢量底图（街道）
+      const arcgisStreetLayer = L.tileLayer(
+        "//server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}",
+        {
+          maxZoom: 19,
+          attribution:
+            "<a href='https://www.arcgis.com/' target='_blank'>ArcGIS Online街道</a>",
+        },
+      );
+      const arcgisStreetLayers = L.layerGroup([arcgisStreetLayer, tdtIboLayer]);
+
+      // 3.3 ArcGIS 暗色底图
+      const arcgisDarkLayer = L.tileLayer(
+        "//server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}",
+        {
+          maxZoom: 19,
+          attribution:
+            "<a href='https://www.arcgis.com/' target='_blank'>ArcGIS Online暗色底图</a>",
+        },
+      );
+      const arcgisDarkLayers = L.layerGroup([arcgisDarkLayer, tdtIboLayer]);
+
+      // 3.4 ArcGIS 浅色底图
+      const arcgisLightLayer = L.tileLayer(
+        "//server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}",
+        {
+          maxZoom: 19,
+          attribution:
+            "<a href='https://www.arcgis.com/' target='_blank'>ArcGIS Online浅色底图</a>",
+        },
+      );
+      const arcgisLightLayers = L.layerGroup([arcgisLightLayer, tdtIboLayer]);
 
       // 4. OSM底图
       const osmLayer = L.tileLayer(
@@ -101,16 +155,76 @@
             "<a href='https://www.openstreetmap.org/' target='_blank'>OpenStreetMap</a>",
         },
       );
-      const osmLayers = L.layerGroup([osmLayer]);
+      const osmLayers = L.layerGroup([osmLayer, tdtIboLayer]);
+
+      // 5. 高德地图底图扩展
+      // 5.1 高德矢量底图
+      const amapVecLayer = L.tileLayer(
+        "https://webrd0{s}.is.autonavi.com/appmaptile?lang=zh_cn&size=1&scale=1&style=8&x={x}&y={y}&z={z}",
+        {
+          subdomains: ["1", "2", "3", "4"],
+          maxZoom: 18,
+          attribution:
+            "<a href='https://amap.com/' target='_blank'>高德矢量底图</a>",
+        },
+      );
+      const amapVecLayers = L.layerGroup([amapVecLayer, tdtIboLayer]);
+
+      // 5.2 高德影像底图
+      const amapImgLayer = L.tileLayer(
+        "https://webst0{s}.is.autonavi.com/appmaptile?style=6&x={x}&y={y}&z={z}",
+        {
+          subdomains: ["1", "2", "3", "4"],
+          maxZoom: 18,
+          attribution:
+            "<a href='https://amap.com/' target='_blank'>高德影像底图</a>",
+        },
+      );
+      // 高德影像标注
+      const amapImgAnnoLayer = L.tileLayer(
+        "https://webst0{s}.is.autonavi.com/appmaptile?style=8&x={x}&y={y}&z={z}",
+        {
+          subdomains: ["1", "2", "3", "4"],
+          maxZoom: 18,
+        },
+      );
+      const amapImgLayers = L.layerGroup([
+        amapImgLayer,
+        tdtIboLayer,
+        amapImgAnnoLayer,
+      ]);
+
+      // 5.3 高德卫星混合底图
+      const amapHybridLayer = L.tileLayer(
+        "https://webst0{s}.is.autonavi.com/appmaptile?style=7&x={x}&y={y}&z={z}",
+        {
+          subdomains: ["1", "2", "3", "4"],
+          maxZoom: 18,
+          attribution:
+            "<a href='https://amap.com/' target='_blank'>高德卫星混合底图</a>",
+        },
+      );
+      const amapHybridLayers = L.layerGroup([amapHybridLayer, tdtIboLayer]);
 
       // ========== 控件配置 ==========
       // 1. 底图切换控件
       L.control
         .layers(
           {
+            // ArcGIS系列
             ArcGIS影像底图: arcgisLayers,
+            ArcGIS街道底图: arcgisStreetLayers,
+            ArcGIS暗色底图: arcgisDarkLayers,
+            ArcGIS浅色底图: arcgisLightLayers,
+            // 天地图系列
             天地图影像底图: imgLayers,
             天地图矢量底图: vecLayers,
+            天地图地形底图: terLayers,
+            // 高德地图系列
+            高德矢量底图_有偏移: amapVecLayers,
+            高德影像底图_有偏移: amapImgLayers,
+            高德混合底图_有偏移: amapHybridLayers,
+            // OSM
             OSM底图_边界有误慎用: osmLayers,
           },
           {},
