@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>WebGIS示例页面</title>
     <!-- 登录 -->
-    <script src="./assets/login.js"></script>
+    <script src="./assets/login.js" async></script>
     <!-- Leaflet核心库 -->
     <script src="./assets/leaflet.js"></script>
     <link rel="stylesheet" href="./assets/leaflet.css" />
@@ -254,6 +254,6 @@
       arcgisLayers.addTo(map);
     </script>
     <!-- geojson图层加载器 -->
-    <script src="./assets/geojsonloader.js"></script>
+    <script src="./assets/geojsonloader.js" defer></script>
   </body>
 </html>
