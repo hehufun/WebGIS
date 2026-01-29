@@ -206,11 +206,29 @@
       );
       const amapHybridLayers = L.layerGroup([amapHybridLayer, tdtIboLayer]);
 
+      // 6. 本地XYZ瓦片底图（wz2501 9至14级）
+      const localXyzLayer = L.tileLayer(
+        // 注意：路径需根据实际文件结构调整，{z}/{x}/{y} 对应瓦片的层级/列/行
+        "./assets/wzjpg/{z}/{x}/{y}.jpg", // 若瓦片格式为jpg，需改为.jpg
+        {
+          // minZoom: 9,
+          maxZoom: 12,
+          // tms: false,
+          // zIndex: 999,
+        },
+      );
+      const localXyzLayers = L.layerGroup([
+        localXyzLayer,
+        // arcgisImgLayer,
+        tdtIboLayer,
+      ]); // 叠加天地图境界底图（可选）
+
       // ========== 控件配置 ==========
       // 1. 底图切换控件
       L.control
         .layers(
           {
+            本地遥感影像_技术展示: localXyzLayers,
             // ArcGIS系列
             ArcGIS影像底图: arcgisLayers,
             ArcGIS街道底图: arcgisStreetLayers,
