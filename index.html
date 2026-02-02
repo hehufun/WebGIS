@@ -87,50 +87,50 @@
       // ========== 底图图层定义 ==========
       // 0. 天地图全球境界底图
       const tdtIboLayer = L.tileLayer(
-        `http://t0.tianditu.gov.cn/DataServer?T=ibo_w&x={x}&y={y}&l={z}&tk=${TDT_TK}`,
+        `https://t0.tianditu.gov.cn/DataServer?T=ibo_w&x={x}&y={y}&l={z}&tk=${TDT_TK}`,
         { maxZoom: 10 },
       );
       // 1. 天地图影像底图
       const tdtImgLayer = L.tileLayer(
-        `http://t0.tianditu.gov.cn/DataServer?T=img_w&x={x}&y={y}&l={z}&tk=${TDT_TK}`,
+        `https://t0.tianditu.gov.cn/DataServer?T=img_w&x={x}&y={y}&l={z}&tk=${TDT_TK}`,
         {
           maxZoom: 18,
           attribution:
-            "<a href='http://www.tianditu.gov.cn/' target='_blank'>天地图影像</a>",
+            "<a href='https://www.tianditu.gov.cn/' target='_blank'>天地图影像</a>",
         },
       );
       const tdtImgAnno = L.tileLayer(
-        `http://t0.tianditu.gov.cn/DataServer?T=cia_w&x={x}&y={y}&l={z}&tk=${TDT_TK}`,
+        `https://t0.tianditu.gov.cn/DataServer?T=cia_w&x={x}&y={y}&l={z}&tk=${TDT_TK}`,
         { maxZoom: 18 },
       );
       const imgLayers = L.layerGroup([tdtImgLayer, tdtIboLayer, tdtImgAnno]);
 
       // 2. 天地图矢量底图
       const tdtVecLayer = L.tileLayer(
-        `http://t0.tianditu.gov.cn/DataServer?T=vec_w&x={x}&y={y}&l={z}&tk=${TDT_TK}`,
+        `https://t0.tianditu.gov.cn/DataServer?T=vec_w&x={x}&y={y}&l={z}&tk=${TDT_TK}`,
         {
           maxZoom: 18,
           attribution:
-            "<a href='http://www.tianditu.gov.cn/' target='_blank'>天地图矢量</a>",
+            "<a href='https://www.tianditu.gov.cn/' target='_blank'>天地图矢量</a>",
         },
       );
       const tdtVecAnno = L.tileLayer(
-        `http://t0.tianditu.gov.cn/DataServer?T=cva_w&x={x}&y={y}&l={z}&tk=${TDT_TK}`,
+        `https://t0.tianditu.gov.cn/DataServer?T=cva_w&x={x}&y={y}&l={z}&tk=${TDT_TK}`,
         { maxZoom: 18 },
       );
       const vecLayers = L.layerGroup([tdtVecLayer, tdtIboLayer, tdtVecAnno]);
 
       // 2.1 天地图地形底图
       const tdtTerLayer = L.tileLayer(
-        `http://t0.tianditu.gov.cn/DataServer?T=ter_w&x={x}&y={y}&l={z}&tk=${TDT_TK}`,
+        `https://t0.tianditu.gov.cn/DataServer?T=ter_w&x={x}&y={y}&l={z}&tk=${TDT_TK}`,
         {
           maxZoom: 18,
           attribution:
-            "<a href='http://www.tianditu.gov.cn/' target='_blank'>天地图地形</a>",
+            "<a href='https://www.tianditu.gov.cn/' target='_blank'>天地图地形</a>",
         },
       );
       const tdtTerAnno = L.tileLayer(
-        `http://t0.tianditu.gov.cn/DataServer?T=cta_w&x={x}&y={y}&l={z}&tk=${TDT_TK}`,
+        `https://t0.tianditu.gov.cn/DataServer?T=cta_w&x={x}&y={y}&l={z}&tk=${TDT_TK}`,
         { maxZoom: 18 },
       );
       const terLayers = L.layerGroup([tdtTerLayer, tdtIboLayer, tdtTerAnno]);
