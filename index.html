@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>WebGIS示例页面</title>
     <!-- 登录 -->
-    <script src="./assets/login.js" async></script>
+    <!-- <script src="./assets/login.js" async></script> -->
     <!-- Leaflet核心库 -->
     <script src="./assets/leaflet.js"></script>
     <link rel="stylesheet" href="./assets/leaflet.css" />
@@ -13,6 +13,7 @@
     <link rel="stylesheet" href="./assets/Leaflet.MousePosition.css" />
     <script src="./assets/Leaflet.MousePosition.js"></script>
     <!-- 自定义css -->
+    <link rel="stylesheet" href="./assets/login.css" />
     <link rel="stylesheet" href="./assets/main.css" />
 
     <!-- WPA -->
@@ -31,6 +32,39 @@
     <link rel="icon" href="./assets/images/icon.svg" type="image/svg+xml" />
   </head>
   <body>
+    <!-- 预定义登录弹窗模板（初始隐藏） -->
+    <div id="login-mask" class="hidden">
+      <div id="login-modal">
+        <h3 class="login-title">系统登录</h3>
+
+        <div class="input-wrap">
+          <label class="input-label" for="username">用户名：</label>
+          <input
+            type="text"
+            id="username"
+            class="login-input"
+            placeholder="请输入用户名"
+          />
+        </div>
+
+        <div class="input-wrap password-wrap">
+          <label class="input-label" for="password">密码：</label>
+          <input
+            type="password"
+            id="password"
+            class="login-input"
+            placeholder="请输入密码"
+          />
+        </div>
+
+        <div id="login-tip"></div>
+        <button id="login-btn">登录</button>
+      </div>
+    </div>
+
+    <!-- 登录逻辑脚本 -->
+    <script src="./assets/login.js"></script>
+
     <!-- 悬浮触发按钮 -->
     <div class="layer-trigger" id="layerTrigger">要素加载</div>
     <!-- 左侧图层控制面板 -->

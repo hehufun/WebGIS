@@ -1,5 +1,5 @@
 // 缓存名称（更新时修改，触发缓存重建）
-const CACHE_NAME = "v1.0.3";
+const CACHE_NAME = "v1.0.5";
 // 需要缓存的资源（替换为你的GeoJSON路径）
 const CACHE_ASSETS = [
   "./",
@@ -13,6 +13,7 @@ const CACHE_ASSETS = [
   `./assets/leaflet.css`,
   `./assets/Leaflet.MousePosition.css`,
   `./assets/Leaflet.MousePosition.js`,
+  `./assets/georaster-layer-for-leaflet.min.js`,
   `./assets/images/icon.svg`,
   `./assets/geojson/乐清.geojson`,
   `./assets/geojson/岸线变化.geojson`,
