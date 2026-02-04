@@ -61,7 +61,6 @@
         <button id="login-btn">登录</button>
       </div>
     </div>
-
     <!-- 登录逻辑脚本 -->
     <script src="./assets/login.js"></script>
 
@@ -98,7 +97,7 @@
         .mousePosition({
           position: "topright",
           showZoom: true,
-          zoomLabel: "缩放级别: {zoom} ",
+          zoomLabel: "缩放: {zoom} ",
           format: "经度: {lng}, 纬度: {lat}",
           precision: 5,
         })
@@ -270,7 +269,7 @@
       const localXyzLayers = L.layerGroup([
         localXyzLayer,
         // arcgisImgLayer,
-      ]); // 叠加天地图境界底图（可选）
+      ]);
 
       // ========== 控件配置 ==========
       // 1. 底图切换控件
