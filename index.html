@@ -84,11 +84,31 @@
         attributionControl: false,
       }).setView([27.8, 120.8], 12);
 
+      // 2. 比例尺控件
+      L.control
+        .scale({
+          imperial: false,
+          maxWidth: 100,
+          position: "bottomleft",
+        })
+        .addTo(map);
+
+      // 3. 鼠标坐标控件
+      L.control
+        .mousePosition({
+          position: "topright",
+          showZoom: true,
+          zoomLabel: "缩放级别: {zoom} ",
+          format: "经度: {lng}, 纬度: {lat}",
+          precision: 5,
+        })
+        .addTo(map);
+
       // ========== 底图图层定义 ==========
       // 0. 天地图全球境界底图
       const tdtIboLayer = L.tileLayer(
         `https://t0.tianditu.gov.cn/DataServer?T=ibo_w&x={x}&y={y}&l={z}&tk=${TDT_TK}`,
-        { maxZoom: 10 },
+        { maxZoom: 18 },
       );
       // 1. 天地图影像底图
       const tdtImgLayer = L.tileLayer(
@@ -103,7 +123,7 @@
         `https://t0.tianditu.gov.cn/DataServer?T=cia_w&x={x}&y={y}&l={z}&tk=${TDT_TK}`,
         { maxZoom: 18 },
       );
-      const imgLayers = L.layerGroup([tdtImgLayer, tdtIboLayer, tdtImgAnno]);
+      const imgLayers = L.layerGroup([tdtImgLayer, tdtImgAnno]);
 
       // 2. 天地图矢量底图
       const tdtVecLayer = L.tileLayer(
@@ -118,7 +138,7 @@
         `https://t0.tianditu.gov.cn/DataServer?T=cva_w&x={x}&y={y}&l={z}&tk=${TDT_TK}`,
         { maxZoom: 18 },
       );
-      const vecLayers = L.layerGroup([tdtVecLayer, tdtIboLayer, tdtVecAnno]);
+      const vecLayers = L.layerGroup([tdtVecLayer, tdtVecAnno]);
 
       // 2.1 天地图地形底图
       const tdtTerLayer = L.tileLayer(
@@ -133,7 +153,7 @@
         `https://t0.tianditu.gov.cn/DataServer?T=cta_w&x={x}&y={y}&l={z}&tk=${TDT_TK}`,
         { maxZoom: 18 },
       );
-      const terLayers = L.layerGroup([tdtTerLayer, tdtIboLayer, tdtTerAnno]);
+      const terLayers = L.layerGroup([tdtTerLayer, tdtTerAnno]);
 
       // 3. ArcGIS影像底图
       // 3.1 原有ArcGIS影像底图
@@ -145,7 +165,7 @@
             "<a href='https://www.arcgis.com/' target='_blank'>ArcGIS Online</a>",
         },
       );
-      const arcgisLayers = L.layerGroup([arcgisImgLayer, tdtIboLayer]);
+      const arcgisLayers = L.layerGroup([arcgisImgLayer]);
 
       // 3.2 ArcGIS 矢量底图（街道）
       const arcgisStreetLayer = L.tileLayer(
@@ -156,7 +176,7 @@
             "<a href='https://www.arcgis.com/' target='_blank'>ArcGIS Online街道</a>",
         },
       );
-      const arcgisStreetLayers = L.layerGroup([arcgisStreetLayer, tdtIboLayer]);
+      const arcgisStreetLayers = L.layerGroup([arcgisStreetLayer]);
 
       // 3.3 ArcGIS 暗色底图
       const arcgisDarkLayer = L.tileLayer(
@@ -167,7 +187,7 @@
             "<a href='https://www.arcgis.com/' target='_blank'>ArcGIS Online暗色底图</a>",
         },
       );
-      const arcgisDarkLayers = L.layerGroup([arcgisDarkLayer, tdtIboLayer]);
+      const arcgisDarkLayers = L.layerGroup([arcgisDarkLayer]);
 
       // 3.4 ArcGIS 浅色底图
       const arcgisLightLayer = L.tileLayer(
@@ -178,7 +198,7 @@
             "<a href='https://www.arcgis.com/' target='_blank'>ArcGIS Online浅色底图</a>",
         },
       );
-      const arcgisLightLayers = L.layerGroup([arcgisLightLayer, tdtIboLayer]);
+      const arcgisLightLayers = L.layerGroup([arcgisLightLayer]);
 
       // 4. OSM底图
       const osmLayer = L.tileLayer(
@@ -189,7 +209,7 @@
             "<a href='https://www.openstreetmap.org/' target='_blank'>OpenStreetMap</a>",
         },
       );
-      const osmLayers = L.layerGroup([osmLayer, tdtIboLayer]);
+      const osmLayers = L.layerGroup([osmLayer]);
 
       // 5. 高德地图底图扩展
       // 5.1 高德矢量底图
@@ -202,7 +222,7 @@
             "<a href='https://amap.com/' target='_blank'>高德矢量底图</a>",
         },
       );
-      const amapVecLayers = L.layerGroup([amapVecLayer, tdtIboLayer]);
+      const amapVecLayers = L.layerGroup([amapVecLayer]);
 
       // 5.2 高德影像底图
       const amapImgLayer = L.tileLayer(
@@ -222,11 +242,7 @@
           maxZoom: 18,
         },
       );
-      const amapImgLayers = L.layerGroup([
-        amapImgLayer,
-        tdtIboLayer,
-        amapImgAnnoLayer,
-      ]);
+      const amapImgLayers = L.layerGroup([amapImgLayer, amapImgAnnoLayer]);
 
       // 5.3 高德卫星混合底图
       const amapHybridLayer = L.tileLayer(
@@ -238,7 +254,7 @@
             "<a href='https://amap.com/' target='_blank'>高德卫星混合底图</a>",
         },
       );
-      const amapHybridLayers = L.layerGroup([amapHybridLayer, tdtIboLayer]);
+      const amapHybridLayers = L.layerGroup([amapHybridLayer]);
 
       // 6. 本地XYZ瓦片底图（wz2501 9至14级）
       const localXyzLayer = L.tileLayer(
@@ -254,7 +270,6 @@
       const localXyzLayers = L.layerGroup([
         localXyzLayer,
         // arcgisImgLayer,
-        tdtIboLayer,
       ]); // 叠加天地图境界底图（可选）
 
       // ========== 控件配置 ==========
@@ -278,32 +293,22 @@
             高德混合底图_有偏移: amapHybridLayers,
             // OSM
             OSM底图_边界有误慎用: osmLayers,
+            // 全球境界: tdtIboLayer,
           },
-          {},
-          { position: "bottomright", collapsed: true, autoZIndex: true },
+          {
+            全球境界: tdtIboLayer,
+          },
+          {
+            position: "bottomright",
+            collapsed: true,
+            autoZIndex: true,
+          },
         )
-        .addTo(map);
-
-      // 2. 比例尺控件
-      L.control
-        .scale({
-          imperial: false,
-          maxWidth: 100,
-          position: "bottomleft",
-        })
-        .addTo(map);
-
-      // 3. 鼠标坐标控件
-      L.control
-        .mousePosition({
-          position: "topright",
-          format: "经度: {lng}, 纬度: {lat}",
-          precision: 5,
-        })
         .addTo(map);
 
       // 设置默认底图
       arcgisLayers.addTo(map);
+      tdtIboLayer.addTo(map);
     </script>
     <!-- geojson图层加载器 -->
     <script src="./assets/geojsonloader.js" defer></script>
