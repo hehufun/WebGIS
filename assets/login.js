@@ -150,33 +150,9 @@
     { username: "operator", password: "op123456", type: "运维人员" },
   ];
 
-  // 4. 恢复页面默认缩放比例的函数
-  function resetPageScale() {
-    // 方案1：通过设置viewport缩放（通用方案）
-    if (document.querySelector('meta[name="viewport"]')) {
-      const viewportMeta = document.querySelector('meta[name="viewport"]');
-      // 恢复viewport默认设置（根据实际需求调整，这里是移动端通用配置）
-      viewportMeta.content =
-        "width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no";
-    }
-
-    // 方案2：通过window调整缩放（兼容部分浏览器）
-    if (window.visualViewport) {
-      window.visualViewport.scale = 1.0;
-    } else if (document.body.style.zoom !== undefined) {
-      document.body.style.zoom = 1.0;
-    }
-
-    // 方案3：通过CSS transform重置（兜底方案）
-    document.body.style.transform = "scale(1)";
-    document.body.style.transformOrigin = "0 0";
-  }
-
   // 5. 登录成功对外暴露的接口
   window.loginSuccess = function (userInfo) {
     console.log("登录成功，账户信息：", userInfo);
-    // 登录成功后恢复页面缩放
-    resetPageScale();
     return userInfo;
   };
 
@@ -245,7 +221,7 @@
         tipText.innerText = successText;
         tipText.className = "success";
 
-        // 执行对外接口（内部已包含恢复缩放逻辑）
+        // 执行对外接口
         window.loginSuccess({
           username: matchedUser.username,
           type: matchedUser.type,
