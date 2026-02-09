@@ -7,7 +7,7 @@
 
 body {
   display: flex; /* 保留flex布局 */
-  padding: 3vh;
+  padding: 6vh;
   height: 100vh;
   overflow: hidden;
   position: relative; /* 新增：为固定定位元素提供参考 */

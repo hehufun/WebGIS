@@ -1,118 +1,128 @@
-// login.js
 (function () {
-  // 1. 动态注入CSS样式
-  function injectLoginStyles() {
-    const style = document.createElement("style");
-    style.textContent = `
-      /* 遮罩层样式 */
-      #login-mask {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100vw;
-        height: 100vh;
-        background: rgba(0, 0, 0, 0.5);
-        z-index: 9998;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        backdrop-filter: blur(2px);
-        pointer-events: auto;
-      }
+  // ========== 新增：本地存储相关常量和工具函数 ==========
+  // 登录状态存储的key
+  const LOGIN_STATUS_KEY = "user_login_status";
+  // 有效期：3天（单位：毫秒）
+  const LOGIN_EXPIRE_TIME = 3 * 24 * 60 * 60 * 1000;
 
-      /* 登录窗口容器 */
-      #login-modal {
-        width: 320px;
-        background: #fff;
-        border-radius: 8px;
-        padding: 24px;
-        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
-        position: relative;
-        z-index: 9999;
-        box-sizing: border-box;
-      }
-
-      /* 登录标题 */
-      #login-modal .login-title {
-        margin: 0 0 20px 0;
-        font-size: 18px;
-        font-weight: 600;
-        color: #333;
-        text-align: center;
-      }
-
-      /* 输入框容器 */
-      #login-modal .input-wrap {
-        margin-bottom: 16px;
-      }
-      #login-modal .input-wrap.password-wrap {
-        margin-bottom: 20px;
-      }
-
-      /* 输入框标签 */
-      #login-modal .input-label {
-        display: block;
-        margin-bottom: 6px;
-        font-size: 14px;
-        color: #666;
-      }
-
-      /* 输入框样式 */
-      #login-modal .login-input {
-        width: 100%;
-        padding: 10px 12px;
-        box-sizing: border-box;
-        border: 1px solid #e5e5e5;
-        border-radius: 4px;
-        font-size: 14px;
-        outline: none;
-      }
-      #login-modal .login-input:focus {
-        border-color: #0078ff;
-      }
-      #login-modal .login-input::placeholder {
-        color: #999;
-      }
-
-      /* 提示文本 */
-      #login-tip {
-        font-size: 12px;
-        text-align: center;
-        margin-bottom: 16px;
-        min-height: 16px;
-      }
-      #login-tip.error {
-        color: #ff4444;
-      }
-      #login-tip.success {
-        color: #00cc66;
-      }
-
-      /* 登录按钮 */
-      #login-btn {
-        width: 100%;
-        padding: 10px;
-        background: #0078ff;
-        color: #fff;
-        border: none;
-        border-radius: 4px;
-        font-size: 14px;
-        cursor: pointer;
-        transition: background 0.2s;
-      }
-      #login-btn:hover {
-        background: #0066cc;
-      }
-
-      /* 隐藏默认样式 */
-      .hidden {
-        display: none !important;
-      }
-    `;
-    document.head.appendChild(style);
+  /**
+   * 保存登录状态到本地存储（带过期时间）
+   * @param {Object} userInfo 用户信息
+   */
+  function saveLoginStatus(userInfo) {
+    const loginData = {
+      userInfo: userInfo,
+      loginTime: new Date().getTime(), // 登录时间戳
+      expireTime: LOGIN_EXPIRE_TIME, // 有效期
+    };
+    localStorage.setItem(LOGIN_STATUS_KEY, JSON.stringify(loginData));
   }
 
-  // 2. 动态创建登录弹窗HTML结构
+  /**
+   * 获取本地存储的登录状态（校验是否过期）
+   * @returns {Object|null} 有效返回用户信息，无效返回null
+   */
+  function getLoginStatus() {
+    try {
+      const loginDataStr = localStorage.getItem(LOGIN_STATUS_KEY);
+      if (!loginDataStr) return null;
+
+      const loginData = JSON.parse(loginDataStr);
+      const now = new Date().getTime();
+      // 校验是否过期：当前时间 - 登录时间 > 有效期 → 过期
+      if (now - loginData.loginTime > loginData.expireTime) {
+        // 过期则清除存储
+        removeLoginStatus();
+        return null;
+      }
+      return loginData.userInfo;
+    } catch (e) {
+      console.error("获取登录状态失败：", e);
+      removeLoginStatus();
+      return null;
+    }
+  }
+
+  /**
+   * 移除本地存储的登录状态
+   */
+  function removeLoginStatus() {
+    localStorage.removeItem(LOGIN_STATUS_KEY);
+  }
+
+  // ========== 新增：创建退出登录按钮 ==========
+  /**
+   * 创建退出登录按钮并添加到页面
+   */
+  function createLogoutButton() {
+    // 避免重复创建
+    if (document.getElementById("logout-btn")) return;
+
+    const logoutBtn = document.createElement("button");
+    logoutBtn.id = "logout-btn";
+    logoutBtn.className = "hidden"; // 默认隐藏
+    // 添加退出登录的SVG图标
+    logoutBtn.innerHTML = `
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-circle-power-icon lucide-circle-power">
+        <path d="M12 7v4"/>
+        <path d="M7.998 9.003a5 5 0 1 0 8-.005"/>
+        <circle cx="12" cy="12" r="10"/>
+      </svg>
+    `;
+    // 绑定退出登录事件
+    logoutBtn.addEventListener("click", handleLogout);
+    // 添加到body末尾
+    document.body.appendChild(logoutBtn);
+  }
+
+  /**
+   * 处理退出登录逻辑
+   */
+  function handleLogout() {
+    // 1. 清除本地登录状态
+    removeLoginStatus();
+    // 2. 隐藏退出按钮
+    hideLogoutButton();
+    // ========== 新增：清空登录提示文本和输入框 ==========
+    const tipText = document.getElementById("login-tip");
+    if (tipText) {
+      tipText.innerText = ""; // 清空提示文字
+      tipText.className = ""; // 清空提示样式
+    }
+    const usernameInput = document.getElementById("username");
+    const passwordInput = document.getElementById("password");
+    if (usernameInput) usernameInput.value = ""; // 清空用户名
+    if (passwordInput) passwordInput.value = ""; // 清空密码
+    // 3. 重新显示登录弹窗
+    showLoginModal();
+    // 4. 提示退出成功
+    alert("已成功退出登录");
+  }
+
+  /**
+   * 显示退出登录按钮
+   */
+  function showLogoutButton() {
+    const logoutBtn = document.getElementById("logout-btn");
+    if (logoutBtn) {
+      logoutBtn.classList.remove("hidden");
+    }
+  }
+
+  /**
+   * 隐藏退出登录按钮
+   */
+  function hideLogoutButton() {
+    const logoutBtn = document.getElementById("logout-btn");
+    if (logoutBtn) {
+      logoutBtn.classList.add("hidden");
+    }
+  }
+
+  // ========== 原有逻辑改造 ==========
+  /**
+   * 动态创建登录弹窗HTML结构
+   */
   function createLoginModal() {
     const loginContainer = document.getElementById("login");
     if (!loginContainer) {
@@ -141,7 +151,7 @@
     return true;
   }
 
-  // 3. 账户数据
+  // 账户数据
   const userAccounts = [
     { username: "admin", password: "123456", type: "超级管理员" },
     { username: "1", password: "1", type: "超级管理员" },
@@ -150,36 +160,28 @@
     { username: "operator", password: "op123456", type: "运维人员" },
   ];
 
-  // 5. 登录成功对外暴露的接口
+  // 登录成功对外暴露的接口
   window.loginSuccess = function (userInfo) {
     console.log("登录成功，账户信息：", userInfo);
     return userInfo;
   };
 
-  // 6. 初始化登录弹窗（显示）
-  function initLoginModal() {
-    // 先注入样式
-    injectLoginStyles();
-    // 创建DOM结构，创建失败则终止
-    const isCreated = createLoginModal();
-    if (!isCreated) return;
-
+  /**
+   * 显示登录弹窗
+   */
+  function showLoginModal() {
     const mask = document.getElementById("login-mask");
-    const usernameInput = document.getElementById("username");
-    const passwordInput = document.getElementById("password");
-    const tipText = document.getElementById("login-tip");
-    const loginBtn = document.getElementById("login-btn");
-
-    // 显示登录弹窗（移除hidden类）
-    mask.classList.remove("hidden");
-    // 阻止页面滚动
-    document.body.style.overflow = "hidden";
-
-    // 绑定登录事件
-    bindLoginEvent(usernameInput, passwordInput, tipText, mask, loginBtn);
+    if (mask) {
+      mask.classList.remove("hidden");
+      document.body.style.overflow = "hidden";
+      // 聚焦用户名输入框
+      document.getElementById("username")?.focus();
+    }
   }
 
-  // 7. 登录验证逻辑
+  /**
+   * 登录验证逻辑
+   */
   function bindLoginEvent(
     usernameInput,
     passwordInput,
@@ -216,24 +218,24 @@
       );
 
       if (matchedUser) {
-        // 登录成功
+        // ========== 新增：登录成功逻辑改造 ==========
+        // 1. 保存登录状态到本地存储（3天有效期）
+        saveLoginStatus(matchedUser);
+        // 2. 执行对外接口
+        window.loginSuccess(matchedUser);
+        // 3. 显示登录成功提示
         const successText = `${matchedUser.username} 登录成功，以${matchedUser.type}权限进入...`;
         tipText.innerText = successText;
         tipText.className = "success";
-
-        // 执行对外接口
-        window.loginSuccess({
-          username: matchedUser.username,
-          type: matchedUser.type,
-        });
-
-        // 延迟关闭弹窗
+        // 4. 延迟关闭弹窗并显示退出按钮
         setTimeout(() => {
           mask.classList.add("hidden");
-          document.body.style.overflow = ""; // 恢复页面滚动
+          document.body.style.overflow = "";
           // 清空输入框
           usernameInput.value = "";
           passwordInput.value = "";
+          // 显示退出登录按钮
+          showLogoutButton();
         }, 166);
       } else {
         // 验证失败
@@ -255,6 +257,40 @@
     });
   }
 
-  // 直接执行初始化（因为JS在div后引入，此时DOM已存在）
-  initLoginModal();
+  /**
+   * 初始化登录逻辑（核心入口）
+   */
+  function initLoginSystem() {
+    // 1. 创建退出登录按钮
+    createLogoutButton();
+    // 2. 创建登录弹窗DOM
+    const isCreated = createLoginModal();
+    if (!isCreated) return;
+
+    const mask = document.getElementById("login-mask");
+    const usernameInput = document.getElementById("username");
+    const passwordInput = document.getElementById("password");
+    const tipText = document.getElementById("login-tip");
+    const loginBtn = document.getElementById("login-btn");
+
+    // 3. 校验本地登录状态
+    const loginUser = getLoginStatus();
+    if (loginUser) {
+      // 有有效登录状态：隐藏登录弹窗，显示退出按钮
+      mask.classList.add("hidden");
+      document.body.style.overflow = "";
+      showLogoutButton();
+      console.log("自动登录成功：", loginUser);
+      window.loginSuccess(loginUser); // 执行登录成功回调
+    } else {
+      // 无有效登录状态：显示登录弹窗
+      showLoginModal();
+    }
+
+    // 4. 绑定登录事件
+    bindLoginEvent(usernameInput, passwordInput, tipText, mask, loginBtn);
+  }
+
+  // 页面加载完成后初始化
+  window.addEventListener("load", initLoginSystem);
 })();
