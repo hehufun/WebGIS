@@ -3,7 +3,7 @@
   // 登录状态存储的key
   const LOGIN_STATUS_KEY = "user_login_status";
   // 有效期：3天（单位：毫秒）
-  const LOGIN_EXPIRE_TIME = 3 * 24 * 60 * 60 * 1000;
+  const LOGIN_EXPIRE_TIME = 0.6 * 24 * 60 * 60 * 1000;
 
   /**
    * 保存登录状态到本地存储（带过期时间）
