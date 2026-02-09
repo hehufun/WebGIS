@@ -354,11 +354,18 @@
         },
       );
 
+      const COSLayer = L.tileLayer(
+        // 注意：路径需根据实际文件结构调整，{z}/{x}/{y} 对应瓦片的层级/列/行
+        "https://wzhky-1258052757.cos.ap-shanghai.myqcloud.com/assets/wzjpg/{z}/{x}/{y}.jpg",
+        { maxZoom: 12 },
+      );
+
       // ========== 控件配置 ==========
       // 1. 底图切换控件
       L.control
         .layers(
           {
+            COSLayer: COSLayer,
             本地_25年影像: localwz2501Layer,
             // 天地图系列
             天地图影像底图: imgLayers,
