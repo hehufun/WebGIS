@@ -5,6 +5,10 @@
   box-sizing: border-box;
 }
 
+html {
+  color-scheme: light dark;
+}
+
 body {
   display: flex; /* 保留flex布局 */
   padding: 6vh;
