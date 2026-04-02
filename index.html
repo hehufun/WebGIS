@@ -93,7 +93,7 @@
         { maxZoom: 18 },
       );
       const imgLayers = L.layerGroup([tdtImgLayer, tdtImgAnno]);
-
+      const tdtImgLayer2 = tdtImgLayer;
       // 2. 天地图矢量底图
       const tdtVecLayer = L.tileLayer(
         `https://t0.tianditu.gov.cn/DataServer?T=vec_w&x={x}&y={y}&l={z}&tk=${TDT_TK}`,
@@ -368,6 +368,7 @@
             COSLayer: COSLayer,
             本地_25年影像: localwz2501Layer,
             // 天地图系列
+            天地图纯影像: tdtImgLayer2,
             天地图影像底图: imgLayers,
             天地图矢量底图: vecLayers,
             天地图地形底图: terLayers,
